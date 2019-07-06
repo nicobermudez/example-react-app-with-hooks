@@ -1,44 +1,53 @@
-import React, { useState, useEffect } from 'react';
+import React, { useCallback, useState } from 'react';
+
+export const useUpdateTodos = todo => {
+
+  const [ value, setValue ] = useState(todo);
+
+  return {
+    value,
+    setValue,
+    add: useCallback(a => setValue(v => [...v, a])),
+    clear: useCallback(() => setValue(() => [])),
+  };
+};
 
 function App() {
 
-	const [todos, setTodos] = useState([{ text: "Write blog post" }]);
-	const [value, setValue] = useState("")
+	const [currentValue, setCurrentValue] = useState("")
 
-  useEffect(() => {
-    document.title = `Don’t forget to ${todos[0].text}`
-  });
-
-	const handleSubmit = event => {
-		event.preventDefault();
-		if (!value) return;
-		setTodos([...todos, { text: value }]);
-		setValue("")
-	}
+	const todos = useUpdateTodos([
+		"Write blog post",
+		"Study Aglorithms",
+		"Apply to dream job"
+	]);
 
 	return (
 		<div>
 
 			<h3>Todos:</h3>
 
-			<div className="todo-list">
-        {todos.map(todo => (
-          <li>{todo.text}</li>
-        ))}
-			</div>
-
-			<form onSubmit={handleSubmit}>
-
+			<form>
 				<input
 					type="text"
 					className="input"
-					value={value}
-					onChange={event => setValue(event.target.value)}
+					value= {currentValue}
+					onChange={event => setCurrentValue(event.target.value)}
 				/>
+			</form>
 
-      </form>
+			<button onClick={() => todos.add(currentValue)}>Add</button>
+
+			<div className="todo-list">
+				{todos.value.map((todo, i) => (
+					<li key={i}>
+						{todo}
+					</li>
+				))}
+			</div>
+			<button onClick={todos.clear}>Clear Todos</button>
 		</div>
-	);
-}
+	)
+};
 
 export default App;
