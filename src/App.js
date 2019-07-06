@@ -1,26 +1,44 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+	const [todos, setTodos] = useState([{ text: "Write blog post" }]);
+	const [value, setValue] = useState("")
+
+  useEffect(() => {
+    document.title = `Don’t forget to ${todos[0].text}`
+  });
+
+	const handleSubmit = event => {
+		event.preventDefault();
+		if (!value) return;
+		setTodos([...todos, { text: value }]);
+		setValue("")
+	}
+
+	return (
+		<div>
+
+			<h3>Todos:</h3>
+
+			<div className="todo-list">
+        {todos.map(todo => (
+          <li>{todo.text}</li>
+        ))}
+			</div>
+
+			<form onSubmit={handleSubmit}>
+
+				<input
+					type="text"
+					className="input"
+					value={value}
+					onChange={event => setValue(event.target.value)}
+				/>
+
+      </form>
+		</div>
+	);
 }
 
 export default App;
